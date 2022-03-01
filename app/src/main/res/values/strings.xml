@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">PSExchange</string>
-    <string name="my_balances">MY BALANCES!</string>
+    <string name="my_balances">MY BALANCES</string>
     <string name="currency_exchange">CURRENCY EXCHANGE</string>
+    <string name="arrow_up">↑</string>
+    <string name="arrow_down">↓</string>
+    <string name="receive">Receive</string>
+    <string name="sell">Sell</string>
 </resources>

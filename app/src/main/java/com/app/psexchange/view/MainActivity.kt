@@ -1,8 +1,9 @@
 package com.app.psexchange.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.app.psexchange.R
@@ -24,22 +25,38 @@ class MainActivity : AppCompatActivity() {
     bind()
   }
   
-  private fun bind(){
+  private fun bind() {
     val balanceAdapter = BalanceAdapter()
     binding.recyclerBalances.adapter = balanceAdapter
-  
-    mainViewModel.balances.observe(this){
-      if (it != null)
-        balanceAdapter.submitList(it)
+    
+    mainViewModel.balances.observe(this) {
+      if (it != null) {
+        balanceAdapter.submitList(list = it)
+        fillSpinner(
+          spinner = binding.sellExchange.spinner,
+          items = mainViewModel.convertToSet(list = it)
+        )
+      }
     }
     
-    latestRatesViewModel.result().observe(this){
-      if (it != null)
-        Toast.makeText(this, it.rates.size.toString(), Toast.LENGTH_SHORT).show()
+    latestRatesViewModel.result().observe(this) {
+      if (it != null) {
+        fillSpinner(
+          spinner = binding.receiveExchange.spinner,
+          items = it.rates.keys
+        )
+      }
     }
   }
   
-  private fun callApi(){
+  private fun fillSpinner(spinner: Spinner, items: Set<String>) {
+    val adapter: ArrayAdapter<String> =
+      ArrayAdapter<String>(this, R.layout.spinner_item, items.toTypedArray())
+    adapter.setDropDownViewResource(R.layout.spinner_item)
+    spinner.adapter = adapter
+  }
+  
+  private fun callApi() {
     latestRatesViewModel.call()
   }
 }

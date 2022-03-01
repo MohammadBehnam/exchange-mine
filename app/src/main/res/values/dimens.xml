@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="default_margin">16dp</dimen>
+    <dimen name="text_extra_small">10sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_medium">15sp</dimen>
+    <dimen name="text_large">18sp</dimen>
+    <dimen name="text_extra_large">30sp</dimen>
 
+    <dimen name="margin_extra_small">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_extra_large">64dp</dimen>
+
+    <dimen name="arrow_circle_size">40dp</dimen>
+    <dimen name="spinner_item_height">36dp</dimen>
+    <dimen name="currency_spinner_width">100dp</dimen>
 </resources>

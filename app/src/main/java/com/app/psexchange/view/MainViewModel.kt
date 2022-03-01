@@ -16,4 +16,12 @@ class MainViewModel @Inject constructor(application: Application) : AndroidViewM
   init {
     balances.postValue(Config.defaultBalance())
   }
+  
+  fun convertToSet(list: ArrayList<BalanceModel>) : Set<String>{
+    val result = HashSet<String>()
+      for (i in 0 until list.size){
+        result.add(list[i].currency)
+      }
+    return result
+  }
 }

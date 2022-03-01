@@ -10,11 +10,14 @@
 
     <TextView
         android:id="@+id/tv_balances_title"
+        style="@style/SmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/my_balances"
         android:textColor="@color/gray_700"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_medium"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -23,23 +26,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin"
+        android:paddingVertical="@dimen/margin_medium"
+        android:paddingStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_balances_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/adapter_balance"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/tv_exchange_title"
+        style="@style/SmallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/currency_exchange"
         android:textColor="@color/gray_700"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_margin="@dimen/margin_medium"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recycler_balances"/>
+
+    <include
+        android:id="@+id/sell_exchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        app:layout_constraintTop_toBottomOf="@id/tv_exchange_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/item_exchange_sell"/>
+
+    <include
+        android:id="@+id/receive_exchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/sell_exchange"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/item_exchange_receive"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

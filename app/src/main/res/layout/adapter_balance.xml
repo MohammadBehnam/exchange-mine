@@ -11,16 +11,16 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/margin_medium"
     tools:context=".view.MainActivity">
 
     <TextView
         android:id="@+id/tv_balances_title"
+        style="@style/LargeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@{item.currency}"
-        android:textColor="@color/black"
-        android:padding="@dimen/default_margin"
+        android:text="@{item.balance + ` ` + item.currency, default = `XXX`}"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
