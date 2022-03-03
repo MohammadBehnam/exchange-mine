@@ -18,7 +18,7 @@
     <style name="ArrowCircle" parent="android:Theme.Light">
         <item name="android:layout_width">@dimen/arrow_circle_size</item>
         <item name="android:layout_height">@dimen/arrow_circle_size</item>
-        <item name="android:textSize">@dimen/text_extra_large</item>
+        <item name="android:textSize">@dimen/text_large</item>
         <item name="android:paddingBottom">@dimen/margin_extra_small</item>
         <item name="android:layout_margin">@dimen/margin_medium</item>
         <item name="android:includeFontPadding">false</item>

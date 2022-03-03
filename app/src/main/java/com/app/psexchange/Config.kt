@@ -8,7 +8,7 @@ class Config {
     
     fun defaultBalance(): ArrayList<BalanceModel>{
       val list = ArrayList<BalanceModel>()
-      list.add(BalanceModel(currency = "EUR", balance = 1000.0))
+      list.add(BalanceModel(currency = "EUR", balance = 1000.0, rate = 1.0))
       return list
     }
   }

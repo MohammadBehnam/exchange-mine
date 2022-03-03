@@ -6,4 +6,6 @@
     <string name="arrow_down">↓</string>
     <string name="receive">Receive</string>
     <string name="sell">Sell</string>
+    <string name="default_receive_value">0.0</string>
+    <string name="submit">Submit</string>
 </resources>

@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LatestRatesRepository @Inject constructor(private val api: RatesApi) {
+class RatesRepository @Inject constructor(private val api: RatesApi) {
   var result: MutableLiveData<ExchangeRateResponse> = MutableLiveData()
   var status: MutableLiveData<Int> = MutableLiveData()
   
