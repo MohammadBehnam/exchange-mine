@@ -2,74 +2,62 @@ package com.app.psexchange.view
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.app.psexchange.Config
-import com.app.psexchange.network.model.BalanceModel
-import com.app.psexchange.network.model.ExchangeRateResponse
+import com.app.psexchange.model.Balance
+import com.app.psexchange.model.Exchange
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 @HiltViewModel
-class BalanceViewModel @Inject constructor(application: Application, private val repository: RatesRepository) : AndroidViewModel(application) {
+class BalanceViewModel @Inject constructor(application: Application, val ratesRepository: RatesRepository) : AndroidViewModel(application) {
   val hasError: MutableLiveData<Boolean> = MutableLiveData()
-  val balances: MutableLiveData<ArrayList<BalanceModel>> = MutableLiveData()
-  val receiveValueRound: MutableLiveData<Double> = MutableLiveData()
-  private var receiveValue: Double = 0.0
-  private var selectedBalanceCurrency: String = ""
-  private var selectedSellValue: Double = 0.0
-  private var selectedSellRate: Double = 0.0
+  val balances: MutableLiveData<ArrayList<Balance>> = MutableLiveData()
+  val selectedBalance: MutableLiveData<Balance> = MutableLiveData()
+  val exchange: MutableLiveData<Exchange> = MutableLiveData()
   
   init {
     balances.postValue(Config.defaultBalance())
-    receiveValueRound.postValue(0.0)
+    exchange.postValue(
+      Exchange(
+        sell = Balance(),
+        receive = Balance()
+      )
+    )
   }
   
-  fun rates(): LiveData<ExchangeRateResponse> {
-    return repository.result
+  fun fetchRates() {
+    ratesRepository.call()
   }
   
-  fun getRates() {
-    repository.call()
+  fun setSellCurrency(currency: String) {
+    selectedBalance.postValue(getBalance(currency))
+    exchange.value?.sell?.currency = currency
+    exchange.value?.sell?.rate = ratesRepository.getRate(currency)
+    calculate()
   }
   
-  fun setBalance(currency: String){
-    selectedBalanceCurrency = currency
-    calculateReceiveValue()
-  }
-
-  fun setSellValue(value: Double){
-    selectedSellValue = value
-    calculateReceiveValue()
+  fun setSellValue(value: Double) {
+    exchange.value?.sell?.value = value
+    calculate()
   }
   
-  fun setReceiveCurrency(currency: String?){
-    selectedSellRate = getSellRate(currency = currency)
-    calculateReceiveValue()
+  fun setReceiveCurrency(currency: String) {
+    exchange.value?.receive?.currency = currency
+    exchange.value?.receive?.rate = ratesRepository.getRate(currency)
+    calculate()
   }
   
-  fun toSet(list: ArrayList<BalanceModel>?) : Set<String>{
+  fun toSet(list: ArrayList<Balance>?): Set<String> {
     val result = HashSet<String>()
-    if (list != null){
+    if (list != null) {
       for (i in 0 until list.size)
         result.add(list[i].currency)
     }
     return result
   }
   
-  private fun getSellRate(currency: String?): Double {
-    var rate = 0.0
-    if (rates().value != null){
-      val tmpRate = rates().value?.rates?.get(currency)
-      if (tmpRate != null) {
-        rate = tmpRate
-      }
-    }
-    return rate
-  }
- 
-  private fun getBalance(currency: String?): BalanceModel? {
+  private fun getBalance(currency: String?): Balance? {
     val tmpBalances = balances.value
     if (tmpBalances != null) {
       for (i in 0 until tmpBalances.size) {
@@ -80,18 +68,24 @@ class BalanceViewModel @Inject constructor(application: Application, private val
     return null
   }
   
-  private fun calculateReceiveValue() {
-    val balance = getBalance(currency = selectedBalanceCurrency)
-    if (balance != null){
-      receiveValue = (selectedSellValue / balance.rate) * selectedSellRate
-      receiveValueRound.postValue(DecimalFormat("##.##").format(receiveValue).toDouble())
-      if (selectedSellValue > balance.balance){
-        hasError.postValue(true)
-      } else {
-        hasError.postValue(false)
+  private fun calculate() {
+    hasError.postValue(false)
+    
+    val sellValue = exchange.value?.sell?.value
+    val sellRate = exchange.value?.sell?.rate
+    val receiveRate = exchange.value?.receive?.rate
+    
+    if (sellValue != null && sellRate != null && receiveRate != null) {
+      val receiveValue = (sellValue / sellRate) * receiveRate
+      exchange.value?.receive?.value = receiveValue
+      
+      val balance = getBalance(currency = exchange.value?.sell?.currency)
+      if (balance != null) {
+        if (sellValue > balance.value)
+          hasError.postValue(true)
       }
-    } else {
-      hasError.postValue(false)
     }
+    
+    exchange.postValue(exchange.value)
   }
 }

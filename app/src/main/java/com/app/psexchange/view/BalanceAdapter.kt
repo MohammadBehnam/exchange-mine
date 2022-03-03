@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.app.psexchange.R
 import com.app.psexchange.databinding.AdapterBalanceBinding
-import com.app.psexchange.network.model.BalanceModel
+import com.app.psexchange.model.Balance
 
-class BalanceAdapter : ListAdapter<BalanceModel, BalanceAdapter.ItemHolder>(DIFF_CALLBACK) {
+class BalanceAdapter : ListAdapter<Balance, BalanceAdapter.ItemHolder>(DIFF_CALLBACK) {
   private var listener: OnItemClickListener? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -22,7 +22,7 @@ class BalanceAdapter : ListAdapter<BalanceModel, BalanceAdapter.ItemHolder>(DIFF
     return ItemHolder(binding)
   }
 
-  override fun submitList(list: List<BalanceModel>?) {
+  override fun submitList(list: List<Balance>?) {
     super.submitList(if (list != null) ArrayList(list) else null)
   }
 
@@ -36,7 +36,7 @@ class BalanceAdapter : ListAdapter<BalanceModel, BalanceAdapter.ItemHolder>(DIFF
   }
 
   interface OnItemClickListener {
-    fun onCopy(item: BalanceModel, position: Int)
+    fun onCopy(item: Balance, position: Int)
   }
 
   inner class ItemHolder(val binding: AdapterBalanceBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -52,13 +52,13 @@ class BalanceAdapter : ListAdapter<BalanceModel, BalanceAdapter.ItemHolder>(DIFF
   }
 
   companion object {
-    private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BalanceModel>() {
-      override fun areItemsTheSame(oldItem: BalanceModel, newItem: BalanceModel): Boolean {
+    private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Balance>() {
+      override fun areItemsTheSame(oldItem: Balance, newItem: Balance): Boolean {
         return oldItem.currency == newItem.currency
       }
 
-      override fun areContentsTheSame(oldItem: BalanceModel, newItem: BalanceModel): Boolean {
-        return oldItem.balance == newItem.balance
+      override fun areContentsTheSame(oldItem: Balance, newItem: Balance): Boolean {
+        return oldItem.value == newItem.value
       }
     }
   }

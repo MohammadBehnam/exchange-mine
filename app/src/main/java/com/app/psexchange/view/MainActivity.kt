@@ -15,7 +15,6 @@ import com.app.psexchange.R
 import com.app.psexchange.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
   private lateinit var binding: ActivityMainBinding
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     viewModel = ViewModelProvider(this)[BalanceViewModel::class.java]
-    viewModel.getRates()
+    viewModel.fetchRates()
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
     binding.lifecycleOwner = this
     binding.viewModel = viewModel
@@ -40,10 +39,10 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun setupRatesObservable() {
-    viewModel.rates().observe(this) {
+    viewModel.ratesRepository.result.observe(this) {
       if (it != null) {
         fillSpinner(
-          spinner = binding.receiveExchange.spinner,
+          spinner = binding.receive.spinner,
           items = it.rates.keys
         )
       }
@@ -57,7 +56,7 @@ class MainActivity : AppCompatActivity() {
       if (it != null) {
         balanceAdapter.submitList(list = it)
         fillSpinner(
-          spinner = binding.sellExchange.spinner,
+          spinner = binding.sell.spinner,
           items = viewModel.toSet(list = it)
         )
       }
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun setupReceiveSpinnerItemChangedListener() {
-    binding.receiveExchange.spinner.onItemSelectedListener =
+    binding.receive.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
           viewModel.setReceiveCurrency(currency = getSelectedReceiveCurrency())
@@ -76,10 +75,10 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun setupSellSpinnerItemChangedListener() {
-    binding.sellExchange.spinner.onItemSelectedListener =
+    binding.sell.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
-          viewModel.setBalance(currency = getSelectedBalanceCurrency())
+          viewModel.setSellCurrency(currency = getSelectedBalanceCurrency())
         }
       
         override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -87,8 +86,8 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun setupSellValue() {
-    binding.sellExchange.etValue.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
-    binding.sellExchange.etValue.addTextChangedListener(object : TextWatcher {
+    binding.sell.etValue.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
+    binding.sell.etValue.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -100,22 +99,22 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun getSelectedBalanceCurrency(): String {
-    val spinnerSelection = binding.sellExchange.spinner.selectedItem
+    val spinnerSelection = binding.sell.spinner.selectedItem
     if (spinnerSelection != null)
       return spinnerSelection.toString()
     return ""
   }
   
-  private fun getSelectedReceiveCurrency(): String? {
-    val spinnerSelection = binding.receiveExchange.spinner.selectedItem
+  private fun getSelectedReceiveCurrency(): String {
+    val spinnerSelection = binding.receive.spinner.selectedItem
     if (spinnerSelection != null)
       return spinnerSelection.toString()
-    return null
+    return ""
   }
   
   private fun getInsertedSellValue(): Double {
-    if (binding.sellExchange.etValue.text.toString().isNotEmpty())
-      return binding.sellExchange.etValue.text.toString().toDouble()
+    if (binding.sell.etValue.text.toString().isNotEmpty())
+      return binding.sell.etValue.text.toString().toDouble()
     return 0.0
   }
   

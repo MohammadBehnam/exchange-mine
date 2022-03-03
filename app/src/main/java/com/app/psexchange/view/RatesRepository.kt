@@ -29,4 +29,15 @@ class RatesRepository @Inject constructor(private val api: RatesApi) {
       }
     }
   }
+  
+  fun getRate(currency: String?): Double {
+    var rate = 0.0
+    if (result.value != null){
+      val tmpRate = result.value?.rates?.get(currency)
+      if (tmpRate != null) {
+        rate = tmpRate
+      }
+    }
+    return rate
+  }
 }

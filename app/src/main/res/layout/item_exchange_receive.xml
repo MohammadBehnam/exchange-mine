@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="java.text.DecimalFormat"/>
         <variable
             name="viewModel"
             type="com.app.psexchange.view.BalanceViewModel" />
@@ -40,9 +40,9 @@
             android:layout_marginHorizontal="@dimen/margin_medium"
             android:gravity="end"
             android:singleLine="true"
-            android:text="@{viewModel.receiveValueRound == 0.0 ? String.valueOf(viewModel.receiveValueRound): `+` + String.valueOf(viewModel.receiveValueRound), default = @string/default_receive_value}"
-            android:textColor="@{viewModel.hasError ? @color/red : viewModel.receiveValueRound > 0.0 ? @color/green : @color/gray_700}"
+            android:textColor="@{viewModel.exchange.receive.value > 0.0 ? @color/green : @color/gray_700}"
             android:textSize="@dimen/text_large"
+            app:twoDigitsRoundText="@{viewModel.exchange.receive.value}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/spinner"
             app:layout_constraintStart_toEndOf="@id/tv_title"

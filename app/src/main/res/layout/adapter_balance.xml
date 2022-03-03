@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.app.psexchange.network.model.BalanceModel" />
+            type="com.app.psexchange.model.Balance" />
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +20,7 @@
         style="@style/LargeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@{item.balance + ` ` + item.currency, default = `XXX`}"
+        android:text="@{item.value + ` ` + item.currency, default = `XXX`}"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
