@@ -31,10 +31,13 @@ class BalanceViewModel @Inject constructor(application: Application, val ratesRe
   }
   
   fun setSellCurrency(currency: String) {
-    selectedBalance.postValue(getBalance(currency))
-    exchange.value?.sell?.currency = currency
-    exchange.value?.sell?.rate = ratesRepository.getRate(currency)
-    calculate()
+    val balance = getBalance(currency = currency)
+    if (balance != null){
+      selectedBalance.postValue(balance)
+      exchange.value?.sell?.currency = currency
+      exchange.value?.sell?.rate = balance.rate
+      calculate()
+    }
   }
   
   fun setSellValue(value: Double) {
