@@ -1,4 +1,4 @@
-package com.app.psexchange.view
+package com.app.psexchange.util
 
 import android.text.InputFilter
 import android.text.Spanned

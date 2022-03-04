@@ -1,17 +1,17 @@
-package com.app.psexchange.view
+package com.app.psexchange.network.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.app.psexchange.Config
-import com.app.psexchange.network.RatesApi
-import com.app.psexchange.network.RequestStatus
-import com.app.psexchange.network.model.ExchangeRateResponse
+import com.app.psexchange.network.Api
+import com.app.psexchange.network.system.RequestStatus
+import com.app.psexchange.network.response.ExchangeRateResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RatesRepository @Inject constructor(private val api: RatesApi) {
+class RatesRepository @Inject constructor(private val api: Api) {
   var result: MutableLiveData<ExchangeRateResponse> = MutableLiveData()
   var status: MutableLiveData<Int> = MutableLiveData()
   

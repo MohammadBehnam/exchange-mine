@@ -1,33 +1,40 @@
-package com.app.psexchange.view
+package com.app.psexchange.ui
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.app.psexchange.R
-import com.app.psexchange.databinding.ActivityMainBinding
+import com.app.psexchange.databinding.FragmentExchangeBinding
+import com.app.psexchange.util.DecimalDigitsInputFilter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-  private lateinit var binding: ActivityMainBinding
-  private lateinit var viewModel: BalanceViewModel
+class ExchangeFragment : Fragment() {
+  private lateinit var binding: FragmentExchangeBinding
+  private lateinit var viewModel: ExchangeViewModel
   
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    viewModel = ViewModelProvider(this)[BalanceViewModel::class.java]
+    viewModel = ViewModelProvider(this)[ExchangeViewModel::class.java]
     viewModel.fetchRates()
-    binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+  }
+  
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    binding = DataBindingUtil.inflate(inflater, R.layout.fragment_exchange, container, false)
     binding.lifecycleOwner = this
     binding.viewModel = viewModel
     bindView()
+    return binding.root
   }
   
   private fun bindView() {
@@ -39,7 +46,7 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun setupRatesObservable() {
-    viewModel.ratesRepository.result.observe(this) {
+    viewModel.ratesRepository.result.observe(viewLifecycleOwner) {
       if (it != null) {
         fillSpinner(
           spinner = binding.receive.spinner,
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity() {
   private fun setupBalanceAdapter() {
     val balanceAdapter = BalanceAdapter()
     binding.recyclerBalances.adapter = balanceAdapter
-    viewModel.balances.observe(this) {
+    viewModel.balances.observe(viewLifecycleOwner) {
       if (it != null) {
         balanceAdapter.submitList(list = it)
         fillSpinner(
@@ -66,10 +73,15 @@ class MainActivity : AppCompatActivity() {
   private fun setupReceiveSpinnerItemChangedListener() {
     binding.receive.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
+        override fun onItemSelected(
+          parentView: AdapterView<*>?,
+          selectedItemView: View?,
+          position: Int,
+          id: Long
+        ) {
           viewModel.setReceiveCurrency(currency = getSelectedReceiveCurrency())
         }
-      
+        
         override fun onNothingSelected(parentView: AdapterView<*>?) {}
       }
   }
@@ -77,10 +89,15 @@ class MainActivity : AppCompatActivity() {
   private fun setupSellSpinnerItemChangedListener() {
     binding.sell.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
+        override fun onItemSelected(
+          parentView: AdapterView<*>?,
+          selectedItemView: View?,
+          position: Int,
+          id: Long
+        ) {
           viewModel.setSellCurrency(currency = getSelectedBalanceCurrency())
         }
-      
+        
         override fun onNothingSelected(parentView: AdapterView<*>?) {}
       }
   }
@@ -89,9 +106,9 @@ class MainActivity : AppCompatActivity() {
     binding.sell.etValue.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter())
     binding.sell.etValue.addTextChangedListener(object : TextWatcher {
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    
+      
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    
+      
       override fun afterTextChanged(p0: Editable?) {
         viewModel.setSellValue(value = getInsertedSellValue())
       }
@@ -119,7 +136,8 @@ class MainActivity : AppCompatActivity() {
   }
   
   private fun fillSpinner(spinner: Spinner, items: Set<String>) {
-    val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.spinner_item, items.toTypedArray())
+    val adapter: ArrayAdapter<String> =
+      ArrayAdapter<String>(requireActivity(), R.layout.spinner_item, items.toTypedArray())
     adapter.setDropDownViewResource(R.layout.spinner_item)
     spinner.adapter = adapter
   }

@@ -1,5 +1,6 @@
-package com.app.psexchange.network
+package com.app.psexchange.network.system
 
+import com.app.psexchange.network.Api
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 object NetworkModule {
   @Provides
   @Singleton
-  fun provideRatesApi(retrofit: Retrofit): RatesApi {
-    return retrofit.create(RatesApi::class.java)
+  fun provideRatesApi(retrofit: Retrofit): Api {
+    return retrofit.create(Api::class.java)
   }
 }

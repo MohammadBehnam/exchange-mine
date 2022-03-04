@@ -1,4 +1,4 @@
-package com.app.psexchange.network
+package com.app.psexchange.network.system
 
 enum class RequestStatus constructor(private val intValue: Int) {
   LOADING(0),

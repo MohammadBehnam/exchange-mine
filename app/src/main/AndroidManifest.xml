@@ -15,7 +15,7 @@
         android:theme="@style/Theme.PSExchange"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".view.MainActivity"
+            android:name=".ui.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>

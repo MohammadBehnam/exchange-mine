@@ -1,4 +1,4 @@
-package com.app.psexchange.view
+package com.app.psexchange.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

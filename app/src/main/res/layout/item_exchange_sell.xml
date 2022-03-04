@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.app.psexchange.view.BalanceViewModel" />
+            type="com.app.psexchange.ui.ExchangeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +41,7 @@
             android:gravity="end"
             android:inputType="numberDecimal"
             android:singleLine="true"
-            android:textColor="@{viewModel.hasError ? @color/red : @color/black}"
+            android:textColor="@{viewModel.exchangeValid ? @color/black : @color/red}"
             android:textSize="@dimen/text_large"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/spinner"
@@ -63,7 +63,7 @@
             android:textSize="@dimen/text_extra_small"
             android:layout_marginTop="-8dp"
             android:textColor="@color/red"
-            android:visibility="@{viewModel.hasError ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.exchangeValid ? View.GONE : View.VISIBLE}"
             app:setBalanceError="@{viewModel.selectedBalance}"
             app:layout_constraintTop_toBottomOf="@id/et_value"
             app:layout_constraintStart_toStartOf="@id/et_value"

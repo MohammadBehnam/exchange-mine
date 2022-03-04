@@ -1,4 +1,4 @@
-package com.app.psexchange.network
+package com.app.psexchange.network.system
 
 import com.app.psexchange.BuildConfig
 import dagger.Module

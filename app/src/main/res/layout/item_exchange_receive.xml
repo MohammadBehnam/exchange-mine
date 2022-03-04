@@ -6,7 +6,7 @@
         <import type="java.text.DecimalFormat"/>
         <variable
             name="viewModel"
-            type="com.app.psexchange.view.BalanceViewModel" />
+            type="com.app.psexchange.ui.ExchangeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
