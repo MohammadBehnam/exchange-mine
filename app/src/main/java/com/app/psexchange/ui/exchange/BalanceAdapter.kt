@@ -1,4 +1,4 @@
-package com.app.psexchange.ui
+package com.app.psexchange.ui.exchange
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,10 +29,6 @@ class BalanceAdapter : ListAdapter<Balance, BalanceAdapter.ItemHolder>(DIFF_CALL
   override fun onBindViewHolder(holder: ItemHolder, position: Int) {
     holder.binding.item = getItem(position)
     holder.binding.executePendingBindings()
-  }
-
-  fun setOnItemClickListener(listener: OnItemClickListener) {
-    this.listener = listener
   }
 
   interface OnItemClickListener {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.app.psexchange.R
 import com.app.psexchange.databinding.ActivityMainBinding
+import com.app.psexchange.ui.exchange.ExchangeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

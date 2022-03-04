@@ -1,4 +1,4 @@
-package com.app.psexchange.ui
+package com.app.psexchange.ui.exchange
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -12,10 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ExchangeViewModel @Inject constructor(
-  application: Application,
-  val ratesRepository: RatesRepository
-) : AndroidViewModel(application) {
+class ExchangeViewModel @Inject constructor(application: Application, val ratesRepository: RatesRepository) : AndroidViewModel(application) {
   val exchangeValid: MutableLiveData<Boolean> = MutableLiveData()
   val balances: MutableLiveData<ArrayList<Balance>> = MutableLiveData()
   val selectedBalance: MutableLiveData<Balance> = MutableLiveData()

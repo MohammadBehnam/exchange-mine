@@ -1,4 +1,4 @@
-package com.app.psexchange.ui
+package com.app.psexchange.ui.exchange
 
 import android.os.Bundle
 import android.text.Editable
