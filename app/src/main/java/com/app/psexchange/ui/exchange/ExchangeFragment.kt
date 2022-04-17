@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -49,8 +50,7 @@ class ExchangeFragment : Fragment() {
   private fun setupOnClicks(){
     binding.btnConfirm.setOnClickListener{
       val exchange = viewModel.confirmExchange()
-      binding.sell.etValue.setText("")
-      //TODO
+      Toast.makeText(requireActivity(), "You have converted ${exchange?.sell?.value} ${exchange?.sell?.currency} to ${exchange?.receive?.value} ${exchange?.receive?.currency}. Commission Fee - ${exchange?.commission} ${exchange?.sell?.currency}", Toast.LENGTH_LONG).show()
     }
   }
 

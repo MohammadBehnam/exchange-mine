@@ -23,7 +23,8 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
     exchange.postValue(
       Exchange(
         sell = Balance(),
-        receive = Balance()
+        receive = Balance(),
+        commission = 0.0
       )
     )
   }
@@ -88,11 +89,12 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
       val receive = Balance()
       receive.currency = exchange.receive.currency
       receive.rate = exchange.receive.rate
-      if (getBalance(exchange.receive.currency) != null){
-        receive.value = exchange.receive.value + getBalance(exchange.receive.currency)!!.value
-        receive.value = receive.value - (receive.value * 0.7 / 100)
+      val balance = getBalance(currency = exchange.receive.currency)
+      if (balance != null){
+        receive.value = exchange.receive.value + balance.value
+        receive.value = receive.value - getCommissionFee(value = exchange.receive.value)
       } else {
-        receive.value = exchange.receive.value - (exchange.receive.value * 0.7 / 100)
+        receive.value = exchange.receive.value - getCommissionFee(value = exchange.receive.value)
       }
       balances.value?.put(receive.currency, receive)
 
@@ -105,12 +107,17 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
         sell.value = 0.0
       }
 
+      exchange.commission = getCommissionFee(value = exchange.sell.value)
       this.exchange.postValue(exchange)
 
       balances.value?.put(sell.currency, sell)
       balances.postValue(getFilteredBalances())
     }
     return exchange
+  }
+
+  fun getCommissionFee(value: Double): Double{
+    return value * Config.COMMISSION_FEE / 100
   }
 
   private fun getFilteredBalances(): HashMap<String, Balance>? {
