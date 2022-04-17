@@ -90,8 +90,9 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
       receive.rate = exchange.receive.rate
       if (getBalance(exchange.receive.currency) != null){
         receive.value = exchange.receive.value + getBalance(exchange.receive.currency)!!.value
+        receive.value = receive.value - (receive.value * 0.7 / 100)
       } else {
-        receive.value = exchange.receive.value
+        receive.value = exchange.receive.value - (exchange.receive.value * 0.7 / 100)
       }
       balances.value?.put(receive.currency, receive)
 
