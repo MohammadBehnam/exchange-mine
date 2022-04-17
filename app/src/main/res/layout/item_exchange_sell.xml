@@ -3,10 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.app.psexchange.ui.exchange.ExchangeViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,14 +63,14 @@
             android:id="@+id/tv_current_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_extra_small"
             android:layout_marginTop="-8dp"
             android:textColor="@color/red"
+            android:textSize="@dimen/text_extra_small"
             android:visibility="@{viewModel.exchangeValid ? View.GONE : View.VISIBLE}"
-            app:setBalanceError="@{viewModel.selectedBalance}"
-            app:layout_constraintTop_toBottomOf="@id/et_value"
+            app:layout_constraintEnd_toEndOf="@id/et_value"
             app:layout_constraintStart_toStartOf="@id/et_value"
-            app:layout_constraintEnd_toEndOf="@id/et_value"/>
+            app:layout_constraintTop_toBottomOf="@id/et_value"
+            app:setBalanceError="@{viewModel.selectedBalance}" />
 
         <View
             android:id="@+id/divider"

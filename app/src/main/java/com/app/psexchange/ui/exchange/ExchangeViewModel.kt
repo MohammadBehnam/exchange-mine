@@ -14,10 +14,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ExchangeViewModel @Inject constructor(application: Application, val ratesRepository: RatesRepository) : AndroidViewModel(application) {
   val exchangeValid: MutableLiveData<Boolean> = MutableLiveData()
-  val balances: MutableLiveData<ArrayList<Balance>> = MutableLiveData()
+  val balances: MutableLiveData<HashMap<String, Balance>> = MutableLiveData()
   val selectedBalance: MutableLiveData<Balance> = MutableLiveData()
   val exchange: MutableLiveData<Exchange> = MutableLiveData()
-  
+
   init {
     balances.postValue(Config.defaultBalance())
     exchange.postValue(
@@ -53,24 +53,8 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
     update()
   }
   
-  fun toSet(list: ArrayList<Balance>?): Set<String> {
-    val result = HashSet<String>()
-    if (list != null) {
-      for (i in 0 until list.size)
-        result.add(list[i].currency)
-    }
-    return result
-  }
-  
   private fun getBalance(currency: String?): Balance? {
-    val tmpBalances = balances.value
-    if (tmpBalances != null) {
-      for (i in 0 until tmpBalances.size) {
-        if (tmpBalances[i].currency == currency)
-          return tmpBalances[i]
-      }
-    }
-    return null
+    return balances.value?.get(currency)
   }
   
   private fun update() {
@@ -82,8 +66,10 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
     exchangeValid.postValue(
       ExchangeUtil.isBalanceSufficient(
         sellValue = exchange.value?.sell?.value,
-        balance = getBalance(currency = exchange.value?.sell?.currency)
-      )
+        balance = getBalance(
+          currency = exchange.value?.sell?.currency
+        )
+      ) && exchange.value?.sell?.currency != exchange.value?.receive?.currency
     )
   }
   
@@ -94,5 +80,48 @@ class ExchangeViewModel @Inject constructor(application: Application, val ratesR
       receiveRate = exchange.value?.receive?.rate,
     )
     exchange.postValue(exchange.value)
+  }
+  
+  fun confirmExchange(): Exchange? {
+    val exchange = exchange.value
+    if (exchange != null) {
+      val receive = Balance()
+      receive.currency = exchange.receive.currency
+      receive.rate = exchange.receive.rate
+      if (getBalance(exchange.receive.currency) != null){
+        receive.value = exchange.receive.value + getBalance(exchange.receive.currency)!!.value
+      } else {
+        receive.value = exchange.receive.value
+      }
+      balances.value?.put(receive.currency, receive)
+
+      val sell = Balance()
+      sell.currency = exchange.sell.currency
+      sell.rate = exchange.sell.rate
+      if (getBalance(exchange.sell.currency) != null){
+        sell.value = getBalance(exchange.sell.currency)!!.value - exchange.sell.value
+      } else {
+        sell.value = 0.0
+      }
+
+      this.exchange.postValue(exchange)
+
+      balances.value?.put(sell.currency, sell)
+      balances.postValue(getFilteredBalances())
+    }
+    return exchange
+  }
+
+  private fun getFilteredBalances(): HashMap<String, Balance>? {
+    val balances = balances.value
+    if (balances != null){
+      val keys = ArrayList(balances.keys)
+      for (i in 0 until keys.size){
+        if (balances[keys[i]]?.value == 0.0){
+          balances.remove(keys[i])
+        }
+      }
+    }
+    return balances
   }
 }

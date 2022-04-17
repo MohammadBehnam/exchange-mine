@@ -38,6 +38,7 @@ class ExchangeFragment : Fragment() {
   }
   
   private fun bindView() {
+    setupOnClicks()
     setupSellValue()
     setupSellSpinnerItemChangedListener()
     setupReceiveSpinnerItemChangedListener()
@@ -45,6 +46,14 @@ class ExchangeFragment : Fragment() {
     setupRatesObservable()
   }
   
+  private fun setupOnClicks(){
+    binding.btnConfirm.setOnClickListener{
+      val exchange = viewModel.confirmExchange()
+      binding.sell.etValue.setText("")
+      //TODO
+    }
+  }
+
   private fun setupRatesObservable() {
     viewModel.ratesRepository.result.observe(viewLifecycleOwner) {
       if (it != null) {
@@ -61,10 +70,10 @@ class ExchangeFragment : Fragment() {
     binding.recyclerBalances.adapter = balanceAdapter
     viewModel.balances.observe(viewLifecycleOwner) {
       if (it != null) {
-        balanceAdapter.submitList(list = it)
+        balanceAdapter.submitList(list = ArrayList(it.values).sortedWith (compareBy { item -> item.currency }))
         fillSpinner(
           spinner = binding.sell.spinner,
-          items = viewModel.toSet(list = it)
+          items = it.keys
         )
       }
     }
@@ -73,12 +82,7 @@ class ExchangeFragment : Fragment() {
   private fun setupReceiveSpinnerItemChangedListener() {
     binding.receive.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(
-          parentView: AdapterView<*>?,
-          selectedItemView: View?,
-          position: Int,
-          id: Long
-        ) {
+        override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
           viewModel.setReceiveCurrency(currency = getSelectedReceiveCurrency())
         }
         
@@ -89,12 +93,7 @@ class ExchangeFragment : Fragment() {
   private fun setupSellSpinnerItemChangedListener() {
     binding.sell.spinner.onItemSelectedListener =
       object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(
-          parentView: AdapterView<*>?,
-          selectedItemView: View?,
-          position: Int,
-          id: Long
-        ) {
+        override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
           viewModel.setSellCurrency(currency = getSelectedBalanceCurrency())
         }
         
@@ -135,10 +134,11 @@ class ExchangeFragment : Fragment() {
     return 0.0
   }
   
-  private fun fillSpinner(spinner: Spinner, items: Set<String>) {
-    val adapter: ArrayAdapter<String> =
-      ArrayAdapter<String>(requireActivity(), R.layout.spinner_item, items.toTypedArray())
-    adapter.setDropDownViewResource(R.layout.spinner_item)
-    spinner.adapter = adapter
+  private fun fillSpinner(spinner: Spinner, items: Set<String>?) {
+    if (items != null){
+      val adapter: ArrayAdapter<String> = ArrayAdapter<String>(requireActivity(), R.layout.spinner_item, items.toTypedArray())
+      adapter.setDropDownViewResource(R.layout.spinner_item)
+      spinner.adapter = adapter
+    }
   }
 }

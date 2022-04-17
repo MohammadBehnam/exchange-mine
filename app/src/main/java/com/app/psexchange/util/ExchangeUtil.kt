@@ -11,8 +11,9 @@ object ExchangeUtil {
   
     fun isBalanceSufficient(sellValue: Double?, balance: Balance?): Boolean {
       if (sellValue != null) {
-        if (balance != null) {
-          if (sellValue > balance.value)
+        val value = balance?.value
+        if (value != null) {
+          if (sellValue > value)
             return false
         }
       }

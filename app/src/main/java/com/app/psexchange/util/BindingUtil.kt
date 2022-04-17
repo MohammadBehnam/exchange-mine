@@ -42,7 +42,7 @@ object BindingUtil {
         return if (arr[1].length < 2){
           arr[0] + "." + arr[1] + "0"
         } else {
-          balance.value.toString()
+          arr[0] + "." + arr[1].substring(0, 2)
         }
       }
     }
